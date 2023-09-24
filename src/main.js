@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
 
@@ -6,6 +6,14 @@ const windowStateKeeper = require('electron-window-state')
 if (require('electron-squirrel-startup')) {
   app.quit()
 }
+
+// Listen for new item request
+ipcMain.on('new-item', (e, itemUrl) => {
+  // Get new item and send back to renderer
+  setTimeout(() => {
+    e.sender.send('new-item-success', itemUrl)
+  }, 2000)
+})
 
 const createWindow = () => {
   // win state keeper

@@ -8,13 +8,13 @@ contextBridge.exposeInMainWorld(
   'api', {
     send: (channel, data) => {
       // whitelist channels
-      let validChannels = ['add-item']
+      let validChannels = ['new-item']
       if (validChannels.includes(channel)) {
         ipcRenderer.send(channel, data)
       }
     },
     receive: (channel, func) => {
-      let validChannels = ['new-item']
+      let validChannels = ['new-item-success']
       if (validChannels.includes(channel)) {
         // Deliberately strip event as it includes `sender`
         ipcRenderer.on(channel, (event, ...args) => func(...args))
