@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Readit</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://picsum.photos/ https://fastly.picsum.photos" />
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+  <body>
+    <header>
+      <button id="show-modal">+</button>
+      <input type="text" id="search" placeholder="Search">
+    </header>
+
+    <main>
+      <p id="no-items">No Items</p>
+      <div id="items">
+        <!-- <div class="read-item">
+          <img src="https://picsum.photos/500/500">
+          <h2>Title of item added.</h2>
+        </div> -->
+      </div>
+    </main>
+
+    <div id="modal">
+      <input type="text" id="url" placeholder="Enter URL">
+      <button id="add-item">Add Item</button>
+      <button id="close-modal">Cancel</button>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
