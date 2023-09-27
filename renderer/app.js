@@ -1,10 +1,23 @@
+import { addItem, changeSelection } from './items.js'
+
 const showModalBtn = document.getElementById('show-modal')
 const modal = document.getElementById('modal')
 const search = document.getElementById('search')
-const items = document.getElementById('items')
+const itemsEl = document.getElementById('items')
 const itemUrl = document.getElementById('url')
 const addItemBtn = document.getElementById('add-item')
 const closeModalBtn = document.getElementById('close-modal')
+
+// filter items by title with "search" input
+search.addEventListener('keyup', (e) => {
+  // loop through all items to find matches
+  Array.from(document.getElementsByClassName('read-item')).forEach((item) => {
+    const hasMatchLowerCase = item.innerText.toLowerCase().includes(search.value)
+    const hasMatchUpperCase = item.innerText.includes(search.value)
+    item.style.display = hasMatchLowerCase || hasMatchUpperCase  ? 'flex' : 'none'
+  })
+})
+
 
 // show modal
 showModalBtn.addEventListener('click', (e) => {
@@ -20,6 +33,13 @@ closeModalBtn.addEventListener('click', () => {
 itemUrl.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     addItemBtn.click()
+  }
+})
+
+// navigate items with up or down arrows
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    changeSelection(e.key)
   }
 })
 
@@ -39,15 +59,19 @@ const toggleModalBtns = () => {
 }
 
 addItemBtn.addEventListener('click', () => {
-  if (itemUrl.value) {
+  let url = itemUrl.value
+  if (url) {
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url
+    }
+
     // send new item url to main process
-    window.api.send('new-item', itemUrl.value)
+    window.api.send('new-item', url)
     toggleModalBtns()
-    
   }
 })
 
-window.api.receive('new-item-success', (itemUrl) => {
+window.api.receive('new-item-success', (newItem) => {
   // Enable buttons
   toggleModalBtns()
 
@@ -55,15 +79,6 @@ window.api.receive('new-item-success', (itemUrl) => {
   itemUrl.value = ''
   modal.style.display = 'none'
 
-  // Add item to "items"
-  const div = document.createElement('div')
-  div.classList.add('read-item')
-  const image = document.createElement('img')
-  // image.src = itemUrl
-  const h2 = document.createElement('h2')
-  h2.innerHTML = itemUrl
-  div.appendChild(image)
-  div.appendChild(h2)
-  items.appendChild(div)
-  
+  // Add item to "itemsEl"
+  addItem(newItem, true)
 })

@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
+const readItem = require('./readItem')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -10,16 +11,22 @@ if (require('electron-squirrel-startup')) {
 // Listen for new item request
 ipcMain.on('new-item', (e, itemUrl) => {
   // Get new item and send back to renderer
-  setTimeout(() => {
-    e.sender.send('new-item-success', itemUrl)
-  }, 2000)
+  readItem(itemUrl, item => {
+    e.sender.send('new-item-success', item)
+  })
+})
+
+// Listen for open item request
+ipcMain.on('open-item', (e, innerText) => {
+  // use innerText to search array of items for a match
+  
 })
 
 const createWindow = () => {
   // win state keeper
   let state = windowStateKeeper({
     defaultWidth: 500,
-    defaultHeight: 650,
+    defaultHeight: 850,
   })
 
   // Create the browser window.
